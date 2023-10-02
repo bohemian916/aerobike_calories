@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vue 3 Example</title>
+    <title>エアロバイクの消費カロリー計算</title>
 </head>
 <body>
     <!-- コードを表示するコンテナ -->
@@ -11,6 +11,7 @@
 
     <!-- Vue 3のスクリプトを読み込む -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="js/dg_function.js"></script>
 
     <script>
   const { createApp, ref, reactive } = Vue
@@ -22,8 +23,10 @@
       const duration = ref('1')
       const cal = ref('243')
 
+      const raw_calories_per_watt = ref(generate_mets_per_watt(weight.value)) 
+
       function calCalories(w, kg, d){
-        cal.value = (12 * w + 3.5 * kg ) /3.5 * 1.05 * d
+        cal.value = parseInt((12 * w + 3.5 * kg ) /3.5 * 1.05 * d)
       }
       function onInput(e) {
         watt.value = e.target.value
@@ -33,6 +36,8 @@
       function onInput2(e) {
         weight.value = e.target.value
         calCalories(watt.value, weight.value, duration.value)
+        raw_calories_per_watt.value = generate_mets_per_watt(weight.value)
+ 
       }
       function onInput3(e) {
         duration.value = e.target.value
@@ -44,9 +49,11 @@
         fontSize: '13px'
       })
 
-      return { watt, weight, duration, onInput, onInput2,onInput3, cal, inputStyle }
+      return { watt, weight, duration, onInput, onInput2,onInput3, cal, inputStyle, raw_calories_per_watt }
     },
     template: `
+      <h1>エアロバイクの消費カロリー計算</h1>
+      <p>負荷ワット数と体重から消費カロリーを計算します</p>
       <a>負荷:</a>
       <input :value="watt" @input="onInput" :style="inputStyle"><a>W</a>
       <br>
@@ -57,7 +64,24 @@
       <input :value="duration" @input="onInput3" :style="inputStyle"><a>時間</a>
     
       <p>消費カロリー</p>
-      <p>{{ cal }}</p>
+      <p>{{ cal }} kcal</p>
+ 
+      <a> 体重が{{weight}}kgの場合の負荷ワットごとの消費カロリー</a>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>負荷ワット数</th>
+            <th>1時間での消費カロリー</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(value, key) in raw_calories_per_watt" :key="key">
+            <td>{{ key }}</td>
+            <td>{{ value }}</td>
+          </tr>
+        </tbody>
+      </table>
+
     `
   })
 
