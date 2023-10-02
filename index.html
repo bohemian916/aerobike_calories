@@ -1,16 +1,67 @@
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 3 Example</title>
+</head>
+<body>
+    <!-- コードを表示するコンテナ -->
+    <div id="app"></div>
 
-<div id="app">{{ message }}</div>
+    <!-- Vue 3のスクリプトを読み込む -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
-<script>
-  const { createApp, ref } = Vue
+    <script>
+  const { createApp, ref, reactive } = Vue
 
-  createApp({
+  const app = createApp({
     setup() {
-      const message = ref('Hello vue!')
-      return {
-        message
+      const watt = ref('50')
+      const weight = ref('60')
+      const duration = ref('1')
+      const cal = ref('243')
+
+      function calCalories(w, kg, d){
+        cal.value = (12 * w + 3.5 * kg ) /3.5 * 1.05 * d
       }
-    }
-  }).mount('#app')
+      function onInput(e) {
+        watt.value = e.target.value
+        calCalories(watt.value, weight.value, duration.value)
+      }
+
+      function onInput2(e) {
+        weight.value = e.target.value
+        calCalories(watt.value, weight.value, duration.value)
+      }
+      function onInput3(e) {
+        duration.value = e.target.value
+        calCalories(watt.value, weight.value, duration.value)
+      }
+
+      const inputStyle = reactive({
+        textAlign: 'right',
+        fontSize: '13px'
+      })
+
+      return { watt, weight, duration, onInput, onInput2,onInput3, cal, inputStyle }
+    },
+    template: `
+      <a>負荷:</a>
+      <input :value="watt" @input="onInput" :style="inputStyle"><a>W</a>
+      <br>
+      <a>体重:</a>
+      <input :value="weight" @input="onInput2" :style="inputStyle"><a>kg</a>
+      <br>
+      <a>運動時間:</a>
+      <input :value="duration" @input="onInput3" :style="inputStyle"><a>時間</a>
+    
+      <p>消費カロリー</p>
+      <p>{{ cal }}</p>
+    `
+  })
+
+  app.mount('#app')
 </script>
+</body>
+</html>
