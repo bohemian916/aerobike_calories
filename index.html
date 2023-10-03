@@ -71,17 +71,22 @@
         <thead>
           <tr>
             <th>負荷ワット数</th>
-            <th>1時間での消費カロリー</th>
+            <th>METs</th>
+            <th>1時間での消費カロリー(kcal)</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(value, key) in raw_calories_per_watt" :key="key">
-            <td>{{ key }}</td>
-            <td>{{ value }}</td>
+          <tr v-for="(item, index) in raw_calories_per_watt ":key="index">
+            <td>{{ item.watt }}</td>
+            <td>{{ item.mets }}</td>
+            <td>{{ item.calorie }}</td>
           </tr>
         </tbody>
       </table>
-
+    <p>エアロバイクの計算式は下記を使っています</p>
+    <p>酸素摂取量VO2(ml/kg/min) = 12 * 負荷ワット数(W) + 3.5 * 体重(kg) </p>
+    <p>METs = VO2 /3.5  </p>
+    <p>消費カロリー(kcal) = METs * 体重(kg) * 1.05 * 時間(h)  </p>
     `
   })
 
